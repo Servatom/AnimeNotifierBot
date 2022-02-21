@@ -1,67 +1,64 @@
-from random import betavariate
 from bs4 import BeautifulSoup
 import requests
 
-anime_id = input('enter anime id')
-url = f'https://myanimelist.net/anime/{anime_id}/'
 
-response = requests.get(url)
+def getAnime(id):
+    url = f'https://myanimelist.net/anime/{id}/'
 
-soup = BeautifulSoup(response.text, 'html.parser')
+    response = requests.get(url)
+
+    if response.status_code != 200:
+        return None
+
+    soup = BeautifulSoup(response.text, 'html.parser')
+
+    tags = soup('div', id="horiznav_nav")
+    for tag in tags:
+        link = tag.find_all('li')
+        s = link[2]
+        link = s.find('a')
+        episode_link = link.get('href')
+        print(episode_link)
+
+    episode_link = requests.get(episode_link)
+
+    soupy = BeautifulSoup(episode_link.text, 'html.parser')
+    # get tbody
+    table_body = soupy.find('tbody')
+    # find all tr with class episode-list-data
+    trs = table_body.find_all('tr', class_="episode-list-data")
+
+    episode_number = None
+    episode_name = ""
+    anime_name = ""
+    image_url = ""
+
+    for tr in trs:
+        # td with class episode-number nowrap
+        episode_number = tr.find('td', class_="episode-number nowrap").text
+        # td with class episode-title
+        episode_name = tr.find('td', class_="episode-title").text.strip()
+
+    print(episode_number)
+    print(episode_name.replace("\n", " "))
+
+    # h1 class title-name
+    anime_name = soupy.find(
+        'h1', class_="title-name").text.strip()
+    print(anime_name)
+
+    # img class  lazyloaded
+    image_url = soupy.find(
+        'div', style="text-align: center;").find('a').find('img').get('data-src')
+    print(image_url)
+
+    data = {"anime_id": id, "anime_name": anime_name, "episode_name": episode_name,
+            "image_url": image_url, "episode_number": episode_number}
+
+    return data
 
 
-tags = soup('div', id="horiznav_nav")
-for tag in tags:
-    link = tag.find_all('li')
-    s = link[2]
-    link = s.find('a')
-    episode_link = link.get('href')
-    print(episode_link)
+if __name__ == '__main__':
+    getAnime("fuck")
 
-
-repos = requests.get(episode_link)
-
-soupy = BeautifulSoup(repos.text, 'html.parser')
-
-
-images = soupy.find_all('div', id="content")
-# print(images)
-for image in images:
-    o = image.find('a')
-    img = o.get('href')
-
-tars = soupy.find_all('tr', class_="episode-list-data")
-count = 0
-name_anime = list()
-date_air = list()
-number_episode = list()
-
-for tar in tars:
-    # getting anime name
-    s = tar.find('td', class_="episode-title")
-    g = s.get_text()
-    g.strip()
-    f = g.replace('\n', ' ')
-    d = f.replace('\xa0', ' ')
-    name_anime.append(d)
-    # getting anime air date
-    u = tar.find('td', class_="episode-aired nowrap")
-    t = u.get_text()
-    t.strip()
-    date_air.append(t)
-    # getting episode number
-    y = tar.find('td', class_="episode-number nowrap")
-    q = y.get_text()
-    q = int(q.strip())
-    number_episode.append(q)
-
-
-num = int(len(name_anime)/2)
-anime_name = name_anime[0:num]
-air_date = date_air[0:num]
-episode_number = number_episode[0:num]
-
-print(anime_name)
-print(air_date)
-print(episode_number)
-print(img)
+# 48736
