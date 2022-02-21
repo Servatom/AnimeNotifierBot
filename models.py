@@ -31,4 +31,17 @@ class Anime(Base):
         self.anime_id = anime_id
         self.server_list = []
 
+class NewEpisode(Base):
+    __tablename__ = 'new_episodes'
+    anime_id = Column(Integer, unique=True, nullable=False, primary_key=True)
+    anime_name = Column(String, nullable=False)
+    episode_name = Column(String, nullable=False)
+    image_url = Column(String, nullable=False)
+
+    def __init__(self, anime_id, anime_name, episode_name, image_url):
+        self.anime_id = anime_id
+        self.anime_name = anime_name
+        self.episode_name = episode_name
+        self.image_url = image_url
+
 
