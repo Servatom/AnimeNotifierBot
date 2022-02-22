@@ -30,10 +30,10 @@ class Anime(Base):
     server_list = MutableList.as_mutable(
         Column(JSON, nullable=False, default=[]))
 
-    def __init__(self, anime_id, latest_episode, server_list):
+    def __init__(self, anime_id, latest_episode, guild_id):
         self.anime_id = anime_id
         self.latest_episode = latest_episode
-        self.server_list = server_list
+        self.server_list = [guild_id]
 
 
 class NewEpisode(Base):
