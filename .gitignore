@@ -1,2 +1,4 @@
 database/clients.sqlite
 __pycache__
+*.sqlite
+.DS_Store
