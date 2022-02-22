@@ -10,6 +10,7 @@ class Add(commands.Cog):
     @commands.command(name="hello")
     async def hello(self, ctx):
         await ctx.send("lol")
+
     @commands.command(name='add')
     async def add(self, ctx, id):
         data = datascrape.getAnime(id)
@@ -23,7 +24,8 @@ class Add(commands.Cog):
             await ctx.send(embed=embed)
             return
         # data is valid
-        utils.addAnime(data['anime_id'], data['episode_number'], ctx.guild.id, data["anime_name"])
+        utils.addAnime(data['anime_id'], data['episode_number'],
+                       ctx.guild.id, data["anime_name"])
         anime_name = data['anime_name']
         embed = discord.Embed(
             title=f'{anime_name}', url='https://myanimelist.net/anime/{id}/', description=f'Adding {anime_name}', color=0x00ff00)
@@ -33,6 +35,7 @@ class Add(commands.Cog):
         embed.add_field(name='Episode Number',
                         value=data['episode_number'], inline=False)
         await ctx.send(embed=embed)
+
 
 def setup(bot):
     bot.add_cog(Add(bot))
