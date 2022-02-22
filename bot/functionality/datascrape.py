@@ -1,6 +1,7 @@
 from bs4 import BeautifulSoup
 import requests
 
+
 def getAnimeName(id):
     url = "https://myanimelist.net/anime/" + str(id)
     response = requests.get(url)
@@ -14,6 +15,7 @@ def getAnimeName(id):
     else:
         anime_name = anime_name.text.strip()
     return anime_name
+
 
 def getAnime(id):
     url = f'https://myanimelist.net/anime/{id}/'
@@ -65,5 +67,5 @@ def getAnime(id):
 
     data = {"anime_id": id, "anime_name": anime_name, "episode_name": episode_name,
             "image_url": image_url, "episode_number": episode_number}
-    
+
     return data

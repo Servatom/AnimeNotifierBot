@@ -2,6 +2,8 @@ from database import Base, SessionLocal, engine
 import models
 
 # add anime
+
+
 def addAnime(anime_id, latest_episode, guild_id, anime_name):
     # check if anime is there
     db = SessionLocal()
