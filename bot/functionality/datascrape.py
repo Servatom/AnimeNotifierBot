@@ -48,9 +48,5 @@ def getAnime(id):
 
     data = {"anime_id": id, "anime_name": anime_name, "episode_name": episode_name,
             "image_url": image_url, "episode_number": episode_number}
-
-<<<<<<< HEAD
+    
     return data
-=======
-    return data
->>>>>>> 9d8c7404fa33a3cc5868b3ac47f9270fa6c9c473
