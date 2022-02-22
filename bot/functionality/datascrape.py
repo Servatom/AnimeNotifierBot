@@ -56,9 +56,3 @@ def getAnime(id):
             "image_url": image_url, "episode_number": episode_number}
 
     return data
-
-
-if __name__ == '__main__':
-    getAnime("fuck")
-
-# 48736
