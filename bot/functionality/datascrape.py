@@ -1,6 +1,19 @@
 from bs4 import BeautifulSoup
 import requests
 
+def getAnimeName(id):
+    url = "https://myanimelist.net/anime/" + str(id)
+    response = requests.get(url)
+    if response.status_code != 200:
+        return None
+    soup = BeautifulSoup(response.text, 'html.parser')
+    anime_name = soup.find('p', class_="title-english title-inherit")
+    if anime_name is None:
+        anime_name = soup.find(
+            'h1', class_="title-name").text.strip()
+    else:
+        anime_name = anime_name.text.strip()
+    return anime_name
 
 def getAnime(id):
     url = f'https://myanimelist.net/anime/{id}/'
@@ -39,8 +52,12 @@ def getAnime(id):
         episode_name = tr.find('td', class_="episode-title").text.strip()
 
     # h1 class title-name
-    anime_name = soupy.find(
-        'h1', class_="title-name").text.strip()
+    anime_name = soupy.find('p', class_="title-english title-inherit")
+    if anime_name is None:
+        anime_name = soupy.find(
+            'h1', class_="title-name").text.strip()
+    else:
+        anime_name = anime_name.text.strip()
 
     # img class  lazyloaded
     image_url = soupy.find(

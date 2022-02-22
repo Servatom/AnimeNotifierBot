@@ -7,9 +7,22 @@ class Add(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    @commands.command(name="hello")
+    async def hello(self, ctx):
+        await ctx.send("lol")
     @commands.command(name='add')
     async def add(self, ctx, id):
         data = datascrape.getAnime(id)
+        if data is None:
+            # anime id is invalid
+            embed = discord.Embed(
+                title="Error",
+                description="Anime ID is invalid",
+                color=0xFF0000
+            )
+            await ctx.send(embed=embed)
+            return
+        # data is valid
         utils.addAnime(data['anime_id'], data['episode_number'], ctx.guild.id)
         anime_name = data['anime_name']
         embed = discord.Embed(
@@ -20,7 +33,6 @@ class Add(commands.Cog):
         embed.add_field(name='Episode Number',
                         value=data['episode_number'], inline=False)
         await ctx.send(embed=embed)
-
 
 def setup(bot):
     bot.add_cog(Add(bot))

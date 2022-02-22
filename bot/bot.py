@@ -10,7 +10,7 @@ def getToken():
     return os.environ.get('TOKEN')
 
 
-cogs = ['cogs.add']
+cogs = ['cogs.add', 'cogs.remove']
 
 
 def load_cogs():
