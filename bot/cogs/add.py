@@ -1,8 +1,8 @@
 import discord
 from discord.ext import commands
 from functionality import datascrape, utils
-
-
+from database import SessionLocal, engine
+import models
 class Add(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -12,8 +12,44 @@ class Add(commands.Cog):
         await ctx.send("lol")
 
     @commands.command(name='add')
-    async def add(self, ctx, id):
+    async def add(self, ctx, *args):
+        if len(args) == 0:
+            embed = discord.Embed(
+                title="Error",
+                description="Anime ID is invalid",
+                color=0xFF0000
+            )
+            await ctx.send(embed=embed)
+            return
+        anime_id = None
+        try:
+            print(args[0])
+            anime_id = int(args[0])
+            print("herE")
+        except:
+            embed = discord.Embed(
+                title="Error",
+                description="Anime ID is invalid",
+                color=0xFF0000
+            )
+            await ctx.send(embed=embed)
+            return
+        db = SessionLocal()
+        id = anime_id
         data = datascrape.getAnime(id)
+        print(data)
+        guild = db.query(models.Server).filter(
+            models.Server.guild_id == ctx.guild.id
+        ).first()
+        if guild is None:
+            # send error
+            embed = discord.Embed(
+                title="Error",
+                description="Please call the setup command ```*setup```",
+                color=0xFF0000
+            )
+            await ctx.send(embed=embed)
+            return
         if data is None:
             # anime id is invalid
             embed = discord.Embed(

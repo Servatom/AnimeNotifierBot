@@ -19,7 +19,6 @@ def getAnimeName(id):
 
 def getAnime(id):
     url = f'https://myanimelist.net/anime/{id}/'
-
     response = requests.get(url)
 
     if response.status_code != 200:

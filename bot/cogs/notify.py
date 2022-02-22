@@ -14,7 +14,7 @@ class Notify(commands.Cog):
         anime_id = data['anime_id']
         anime = session.query(models.Anime).filter(
             models.Anime.anime_id == anime_id).first()
-        guilds = anime.server_list
+        guilds = list(anime.server_list)
         anime_name = data['anime_name']
         embed = discord.Embed(
             title=f'{anime_name}', url='https://myanimelist.net/anime/{id}/', description=f'New episode of {anime_name} is now airing!', color=0x00ff00)
@@ -23,10 +23,13 @@ class Notify(commands.Cog):
             guild = session.query(models.Server).filter(
                 models.Server.guild_id == guild_id).first()
             print(guild.guild_id, guild.channel_id)
-            channel = self.bot.get_channel(guild.channel_id)
-            await channel.send(embed=embed)
+            try:
+                channel = self.bot.fetch_channel(guild.channel_id)
+                await channel.send(embed=embed)
+            except:
+                print("Could not send message to channel")
+                continue
         session.close()
-
 
 def setup(bot):
     bot.add_cog(Notify(bot))
