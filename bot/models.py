@@ -10,6 +10,7 @@ try:
 except:
     PREFIX = "*"
 
+
 class Server(Base):
     __tablename__ = 'servers'
     guild_id = Column(Integer, unique=True, nullable=False, primary_key=True)
@@ -21,15 +22,19 @@ class Server(Base):
         self.prefix = prefix
         self.channel_id = channel_id
 
+
 class Anime(Base):
     __tablename__ = 'anime'
     anime_id = Column(Integer, unique=True, nullable=False, primary_key=True)
     latest_episode = Column(Integer, nullable=False, default=null())
-    server_list = MutableList.as_mutable(Column(JSON, nullable=False, default=[]))
+    server_list = MutableList.as_mutable(
+        Column(JSON, nullable=False, default=[]))
 
-    def __init__(self, anime_id):
+    def __init__(self, anime_id, latest_episode, server_list):
         self.anime_id = anime_id
-        self.server_list = []
+        self.latest_episode = latest_episode
+        self.server_list = server_list
+
 
 class NewEpisode(Base):
     __tablename__ = 'new_episodes'
@@ -43,5 +48,3 @@ class NewEpisode(Base):
         self.anime_name = anime_name
         self.episode_name = episode_name
         self.image_url = image_url
-
-
