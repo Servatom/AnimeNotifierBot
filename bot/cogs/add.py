@@ -23,7 +23,7 @@ class Add(commands.Cog):
             await ctx.send(embed=embed)
             return
         # data is valid
-        utils.addAnime(data['anime_id'], data['episode_number'], ctx.guild.id)
+        utils.addAnime(data['anime_id'], data['episode_number'], ctx.guild.id, data["anime_name"])
         anime_name = data['anime_name']
         embed = discord.Embed(
             title=f'{anime_name}', url='https://myanimelist.net/anime/{id}/', description=f'Adding {anime_name}', color=0x00ff00)
