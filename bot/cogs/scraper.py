@@ -9,7 +9,7 @@ class Scraper(commands.Cog):
         self.bot = bot
         task = self.loop.start()
 
-    @tasks.loop(seconds=60)
+    @tasks.loop(minutes=1)
     async def loop(self):
         print('running loop')
         db = SessionLocal()
@@ -20,7 +20,9 @@ class Scraper(commands.Cog):
             if data is None:
                 continue
             # check if latest episode is new
-            if anime.latest_episode == data['episode_number']:
+            print(anime.latest_episode)
+            print(data['episode_number'])
+            if anime.latest_episode == int(data['episode_number']):
                 continue
             # update latest episode
             anime.latest_episode = data['episode_number']
@@ -38,7 +40,7 @@ class Scraper(commands.Cog):
                     )
                 embed.set_thumbnail(url=data['image_url'])
                 try:
-                    channel = self.bot.fetch_channel(guild.channel_id)
+                    channel = await self.bot.fetch_channel(guild.channel_id)
                     await channel.send(embed=embed)
                 except:
                     print("Could not send message to channel")

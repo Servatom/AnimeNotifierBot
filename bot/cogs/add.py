@@ -43,13 +43,17 @@ class Add(commands.Cog):
         ).first()
         if guild is None:
             # send error
-            embed = discord.Embed(
-                title="Error",
-                description="Please call the setup command ```*setup```",
-                color=0xFF0000
+            # get channel 
+            channel = ctx.channel
+            channel_id = channel.id
+            # add server in database
+            server = models.Server(
+                guild_id=ctx.guild.id,
+                prefix="*",
+                channel_id=channel_id,
             )
-            await ctx.send(embed=embed)
-            return
+            db.add(server)
+            db.commit()
         if data is None:
             # anime id is invalid
             embed = discord.Embed(
