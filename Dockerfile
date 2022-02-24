@@ -19,8 +19,8 @@ COPY ./bot /bot
 # Creates a non-root user with an explicit UID and adds permission to access the /app folder
 # For more info, please refer to https://aka.ms/vscode-docker-python-configure-containers
 RUN adduser -u 5678 --disabled-password --gecos "" appuser
-RUN chown -R appuser /Bot
-RUN chown -R appuser /Bot/database
+RUN chown -R appuser /bot
+RUN chown -R appuser /bot/database
 USER root
 
 
