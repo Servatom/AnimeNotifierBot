@@ -5,11 +5,12 @@ from functionality import datascrape, utils
 import models
 from database import SessionLocal, engine
 
+
 class Remove(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name='remove')
+    @commands.command(name='remove <anime id>', description='Remove an anime')
     async def add(self, ctx, id):
         # check if anime id is in the db
         db = SessionLocal()
@@ -39,11 +40,13 @@ class Remove(commands.Cog):
                 )
                 await ctx.send(embed=embed)
             else:
-                # client 
+                # client
                 guild = db.query(models.Server).filter(
                     guild_id=ctx.guild.id
                 ).first()
                 prefix = guild.prefix
                 await ctx.send("You are not subscribed to this anime please use ```{}add```".format(prefix))
+
+
 def setup(bot):
     bot.add_cog(Remove(bot))

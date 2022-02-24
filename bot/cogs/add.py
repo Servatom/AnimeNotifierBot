@@ -6,15 +6,12 @@ import models
 import os
 prefix = os.environ['PREFIX']
 
+
 class Add(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name="hello")
-    async def hello(self, ctx):
-        await ctx.send("lol")
-
-    @commands.command(name='add')
+    @commands.command(name='add <anime id>', description='Add a new anime')
     async def add(self, ctx, *args):
         if len(args) == 0:
             embed = discord.Embed(
@@ -28,7 +25,6 @@ class Add(commands.Cog):
         try:
             print(args[0])
             anime_id = int(args[0])
-            print("herE")
         except:
             embed = discord.Embed(
                 title="Error",
@@ -46,7 +42,7 @@ class Add(commands.Cog):
         ).first()
         if guild is None:
             # send error
-            # get channel 
+            # get channel
             channel = ctx.channel
             channel_id = channel.id
             # add server in database
