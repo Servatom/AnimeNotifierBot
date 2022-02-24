@@ -41,5 +41,5 @@
         # Run docker container
         - name: Run docker container
           shell: |
-            cd /DeployedAPIs/AnimeNotifierBot
+            cd /DeployedAPIs/AnimeNotifierBot/
             docker-compose up --build -d
