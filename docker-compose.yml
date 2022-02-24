@@ -7,7 +7,7 @@ services:
       context: .
       dockerfile: ./Dockerfile
     volumes:
-      - ./database:/Bot/database
+      - ./database:/bot/database
     environment:
       - TOKEN=<TOKEN>
       - PREFIX=*
