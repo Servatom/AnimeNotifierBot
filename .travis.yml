@@ -17,7 +17,7 @@ jobs:
       -in deploymentFiles/docker-compose.yml.enc -out ./playbooks/docker-compose.yml
       -d
     - openssl aes-256-cbc -K $encrypted_d64d9031a8dc_key -iv $encrypted_d64d9031a8dc_iv
-      -in deplpoymentFiles/ansible_hosts.enc -out ./ansible_hosts -d
+      -in deploymentFiles/ansible_hosts.enc -out ./ansible_hosts -d
     install:
     - pip install ansible
     script:
