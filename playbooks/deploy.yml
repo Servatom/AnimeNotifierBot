@@ -1,0 +1,45 @@
+---
+    - hosts: prod
+      tasks:
+        - name: Check if repo is cloned
+          stat:
+            path: "/DeployedAPIs/AnimeNotifierBot"
+          register: repo_exists
+        
+        - name: If repo exists then re run docker container
+          when: repo_exists.stat.exists
+          # first enter folder
+          shell: |
+            cd /DeployedAPIs/AnimeNotifierBot
+            git pull
+        - name: If repo does not exist clone the repo
+          when: not repo_exists.stat.exists
+          shell: |
+            cd /DeployedAPIs
+            git clone https://github.com/Servatom/AnimeNotifierBot.git
+        
+        # first enter folder
+        - name: Enter folder
+          when: not repo_exists.stat.exists
+          shell: |
+            mkdir /DeployedAPIs/AnimeNotifierBot/database
+            rm -f /DeployedAPIs/AnimeNotifierBot/docker-compose.yml
+        
+        # copy docker-compose.yml
+        - name: Copy docker-compose.yml
+          copy:
+            src: docker-compose.yml
+            dest: /DeployedAPIs/AnimeNotifierBot/docker-compose.yml
+        
+        # Install requirements.txt
+        - name: Install requirements.txt
+          when: not repo_exists.stat.exists
+          pip:
+            name: install
+            requirements: /DeployedAPIs/AnimeNotifierBot/requirements.txt
+        
+        # Run docker container
+        - name: Run docker container
+          shell: |
+            cd /DeployedAPIs/AnimeNotifierBot
+            docker-compose up --build -d

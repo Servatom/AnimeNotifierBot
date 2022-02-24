@@ -1,0 +1,42 @@
+sudo: required
+dist: focal
+stages:
+- name: Tests
+- name: Push
+- name: Deploy
+jobs:
+  include:
+  - stage: Tests
+    name: Docker build Tests
+    language: python
+    python: '3.8'
+    services:
+    - docker
+    before_script: pip install docker-compose
+    script:
+    - docker-compose run --rm animenotifierbot sh -c "python bot.py"
+  - stage: Push
+    name: Docker build Push
+    script:
+    - docker build -t raghavtinker/animenotifierbot .
+    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+    - docker push raghavtinker/animenotifierbot
+  - stage: Deploy
+    name: Deploy bot to server
+    language: python
+    python: '3.8'
+    cache: pip
+    before_install:
+    - openssl aes-256-cbc -K $encrypted_b06a1a195e3f_key -iv $encrypted_b06a1a195e3f_iv
+      -in ansible.enc -out ./ansible -d
+    - chmod 600 ansible
+    - openssl aes-256-cbc -K $encrypted_ae985974e831_key -iv $encrypted_ae985974e831_iv
+      -in deploymentFiles/docker-compose.yml.enc -out ./playbooks/docker-compose.yml
+      -d
+    - openssl aes-256-cbc -K $encrypted_d64d9031a8dc_key -iv $encrypted_d64d9031a8dc_iv
+      -in deplpoymentFiles/ansible_hosts.enc -out ./ansible_hosts -d
+    install:
+    - pip install ansible
+    script:
+    - ansible-playbook playbooks/deploy.yml
+
