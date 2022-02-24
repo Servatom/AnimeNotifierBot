@@ -37,7 +37,7 @@ def getToken():
     return os.environ.get('TOKEN')
 
 
-cogs = ['cogs.add', 'cogs.remove', 'cogs.notify', 'cogs.scraper']
+cogs = ['cogs.add', 'cogs.remove', 'cogs.scraper']
 
 
 def load_cogs():
