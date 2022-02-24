@@ -10,13 +10,15 @@ models.Base.metadata.create_all(bind=engine)
 
 prefix_data = {}
 
+
 def fillPrefix():
     global prefix_data
     prefix_data = {}
     guilds = db.query(models.Server).all()
     for guild in guilds:
         prefix_data[str(guild.guild_id)] = guild.prefix
-    
+
+
 def get_prefix(client, message):
     global prefix_data
     prefix = ""
@@ -31,7 +33,9 @@ def get_prefix(client, message):
         prefix_guild = prefix
     return prefix_guild
 
+
 bot = commands.Bot(command_prefix=(get_prefix), help_command=None)
+
 
 def getToken():
     return os.environ.get('TOKEN')
@@ -48,8 +52,10 @@ def load_cogs():
 @bot.event
 async def on_ready():
     print('AnimeNotifier is connected to Discord!')
+    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name="*help"))
 
-@bot.command("setup")
+
+@bot.command(name="setup", description="Change the notification channel for the server")
 async def setup(ctx):
     global prefix_data
     prefix = ""
@@ -66,10 +72,12 @@ async def setup(ctx):
         if channel.permissions_for(ctx.guild.me).send_messages:
             list_of_channels.append(channel)
     # embed
-    embed = discord.Embed(title="Setup", description="Please select a channel to send messages to", color=0x00ff00)
+    embed = discord.Embed(
+        title="Setup", description="Please select a channel to send messages to", color=0x00ff00)
     count = 1
     for channel in list_of_channels:
-        embed.add_field(name= str(count) +". " + channel.name, value=channel.id, inline=False)
+        embed.add_field(name=str(count) + ". " + channel.name,
+                        value=channel.id, inline=False)
         count = count + 1
     # send embed
     msg = await ctx.send(embed=embed)
@@ -89,7 +97,7 @@ async def setup(ctx):
         )
         await ctx.send("You have not responded for 60s so quitting!")
         return
-    
+
     # check if response is valid
     channel_id = 0
     print(len(list_of_channels))
@@ -104,12 +112,13 @@ async def setup(ctx):
         )
         await ctx.send("You have not responded with a valid response so quitting!")
         return
-    
+
     # check if channel is valid
     channel = list_of_channels[channel_id - 1]
-    
+
     # check if guild id is already in database
-    guild = db.query(models.Server).filter(models.Server.guild_id == guild_id).first()
+    guild = db.query(models.Server).filter(
+        models.Server.guild_id == guild_id).first()
     if guild:
         # update db
         guild.channel = channel.id
@@ -127,10 +136,11 @@ async def setup(ctx):
         db.add(client)
         db.commit()
         prefix_data[str(guild_id)] = client.prefix
-    
+
     await channel.send("Setup complete")
 
-@bot.command(name="prefix")
+
+@bot.command(name="prefix", description=f"Change the prefix for the bot")
 async def changePrefix(ctx):
     """
     Change the prefix of the bot
@@ -138,14 +148,15 @@ async def changePrefix(ctx):
     global prefix_data
     global prefix
     if str(ctx.guild.id) not in prefix_data:
-            embed = discord.Embed(
-                description="You are not registered, please run `" + prefix + "setup` first",
-                title="",
-                color=discord.Color.red(),
-            )
-            await ctx.send(embed=embed)
-            return
-    prefix = db.query(models.Server).filter_by(guild_id=ctx.guild.id).first().prefix
+        embed = discord.Embed(
+            description="You are not registered, please run `" + prefix + "setup` first",
+            title="",
+            color=discord.Color.red(),
+        )
+        await ctx.send(embed=embed)
+        return
+    prefix = db.query(models.Server).filter_by(
+        guild_id=ctx.guild.id).first().prefix
     embed = discord.Embed(
         title="Enter the new prefix for your bot",
         description="Current prefix is : " + prefix,
@@ -182,6 +193,20 @@ async def changePrefix(ctx):
 
     # Update prefix_data and reload cogs
     prefix_data[str(ctx.guild.id)] = new_prefix
+
+
+@bot.command(name="help", description="Get help for the bot commands")
+async def help(ctx):
+    embed = discord.Embed(
+        title='Help',
+        description='All available bot commands:',
+        color=discord.Color.blue(),
+    )
+    for command in bot.commands:
+        print(command.name)
+        embed.add_field(name=f'```{command.name}```',
+                        value=command.description, inline=False)
+    await ctx.send(embed=embed)
 
 load_cogs()
 fillPrefix()
