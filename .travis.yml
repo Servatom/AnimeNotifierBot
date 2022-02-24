@@ -21,3 +21,4 @@ jobs:
     - pip install ansible
     script:
     - ansible-playbook playbooks/deploy.yml
+
