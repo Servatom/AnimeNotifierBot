@@ -3,6 +3,9 @@ from discord.ext import commands
 from functionality import datascrape, utils
 from database import SessionLocal, engine
 import models
+import os
+prefix = os.environ['PREFIX']
+
 class Add(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -49,7 +52,7 @@ class Add(commands.Cog):
             # add server in database
             server = models.Server(
                 guild_id=ctx.guild.id,
-                prefix="*",
+                prefix=prefix,
                 channel_id=channel_id,
             )
             db.add(server)
