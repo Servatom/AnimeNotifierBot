@@ -1,26 +1,9 @@
 sudo: required
 dist: focal
 stages:
-- name: Tests
-- name: Push
 - name: Deploy
 jobs:
   include:
-  - stage: Tests
-    name: Docker build Tests
-    language: python
-    python: '3.8'
-    services:
-    - docker
-    before_script: pip install docker-compose
-    script:
-    - docker-compose run --rm animenotifierbot sh -c "python bot.py"
-  - stage: Push
-    name: Docker build Push
-    script:
-    - docker build -t raghavtinker/animenotifierbot .
-    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
-    - docker push raghavtinker/animenotifierbot
   - stage: Deploy
     name: Deploy bot to server
     language: python
